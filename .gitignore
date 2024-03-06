@@ -9,4 +9,5 @@
 /public/bundles/
 /var/
 /vendor/
+/.docker/var/
 ###< symfony/framework-bundle ###

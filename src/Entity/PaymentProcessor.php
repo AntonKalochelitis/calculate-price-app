@@ -32,6 +32,9 @@ class PaymentProcessor
         return $this->name;
     }
 
+    public const PAYPAL = 'paypal';
+    public const STRIPE = 'stripe';
+
     public function setName(string $name): static
     {
         $this->name = $name;

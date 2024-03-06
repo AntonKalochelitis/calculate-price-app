@@ -35,3 +35,60 @@ make migration
     POST   http://127.0.0.1:9580/api/calculate/price - Calculate product price
     POST   http://127.0.0.1:9580/api/purchase - Payment 
 ```
+
+```shell
+curl --request POST \
+--url http://192.168.57.101:9950/api/calculate/price \
+--header 'Content-Type: application/json' \
+--data '{
+"product": 1,
+"taxNumber": "DE123456789"
+}'
+
+Response1:
+{
+	"product_name": "Iphone",
+	"product_amount": "100.00 EUR",
+	"coupon": "5.00 EUR",
+	"product_with_coupon": "95.00 EUR",
+	"tax": "19%",
+	"costing_tax": "18.05 EUR",
+	"costing_amount": "113.05 EUR"
+}
+```
+
+```shell
+curl --request POST \
+--url http://127.0.0.1:9950/api/purchase \
+--header 'Content-Type: application/json' \
+--data '{
+"product": 1,
+"taxNumber": "IT12345678900",
+"couponCode": "CG7HZSZK-HHA2LLXF-VS31IO16",
+"paymentProcessor": "paypal"
+}'
+
+Response1:
+{
+"order_id": 1,
+"product_name": "Iphone",
+"product_amount": "100.00 EUR",
+"coupon": "0.00 EUR",
+"product_with_coupon": "100.00 EUR",
+"tax": "22%",
+"costing_tax": "22.00 EUR",
+"costing_amount": "122.00 EUR"
+}
+
+Response2:
+{
+"order_id": 2,
+"product_name": "Iphone",
+"product_amount": "100.00 EUR",
+"coupon": "5.00 EUR",
+"product_with_coupon": "95.00 EUR",
+"tax": "22%",
+"costing_tax": "20.90 EUR",
+"costing_amount": "115.90 EUR"
+}
+```

@@ -10,15 +10,19 @@ use App\Service\Tax as ServiceTax;
 use Money\Currencies\ISOCurrencies;
 use Money\Formatter\DecimalMoneyFormatter;
 use Money\Money;
+use App\PaymentProcessor\PaypalPaymentProcessor;
+use App\PaymentProcessor\StripePaymentProcessor;
 
 class Purchase
 {
     public function __construct(
-        protected ServiceTax        $serviceTax,
-        protected ServiceCoupon     $serviceCoupon,
-        protected PurchaseOrder     $purchaseOrder,
-        protected ProductRepository $productRepository,
-        protected PaymentProcessor  $paymentProcessor
+        protected ServiceTax             $serviceTax,
+        protected ServiceCoupon          $serviceCoupon,
+        protected PurchaseOrder          $purchaseOrder,
+        protected ProductRepository      $productRepository,
+        protected PaymentProcessor       $paymentProcessor,
+        protected PaypalPaymentProcessor $paypalPaymentProcessor,
+        protected StripePaymentProcessor $stripePaymentProcessor
     )
     {
     }
@@ -39,6 +43,10 @@ class Purchase
         if (!$this->paymentProcessor->getPaymentProcessorValid($paymentProcessor)) {
             throw new \InvalidArgumentException('Payment Processor was not found');
         }
+        $paymentProcessor = match ($this->paymentProcessor->getPaymentProcessorByName($paymentProcessor)->getName()) {
+            \App\Entity\PaymentProcessor::PAYPAL => $this->paypalPaymentProcessor,
+            \App\Entity\PaymentProcessor::STRIPE => $this->stripePaymentProcessor,
+        };
 
         $symbol = $product->getCurrency()->getSymbol();
         $productPrice = match ($symbol) {
@@ -65,6 +73,8 @@ class Purchase
             if (!empty($coupon)) {
                 $this->serviceCoupon->setCouponByCouponDeactivated($coupon);
             }
+
+            $paymentProcessor->pay($costingTax->getAmount());
         }
 
         return [

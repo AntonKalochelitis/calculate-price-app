@@ -35,6 +35,7 @@ final class Version20240315065555 extends AbstractMigration
         $this->addSql("INSERT INTO `tax` (`country_id`, `code`, `value`) VALUES (4, 'GR', 24);");
 
         $this->addSql("INSERT INTO `payment_processor` (`id`, `name`, `status`) VALUES (1, 'paypal', 1);");
+        $this->addSql("INSERT INTO `payment_processor` (`id`, `name`, `status`) VALUES (2, 'stripe', 1);");
     }
 
     public function down(Schema $schema): void
