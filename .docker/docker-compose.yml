@@ -1,0 +1,52 @@
+version: '3.2'
+
+services:
+  nginx:
+    container_name: ${NGINX_CONTAINER_NAME}
+    image: nginx:latest
+    ports:
+      - ${APP_WEB_PORT:-80}:80
+    volumes:
+      - ./nginx/app.conf:/etc/nginx/conf.d/default.conf
+      - ./../:/app:delegated
+    depends_on:
+      - db
+      - php_fpm
+    restart: always
+
+  php_fpm:
+    container_name: ${PHPFPM_CONTAINER_NAME}
+    build:
+      context: ./php-fpm
+      args:
+        APP_ENV: ${APP_ENV}
+    volumes:
+      - ./../:/app:rw
+      - ./var/log:/app/var/log:rw
+    working_dir: /app
+    restart: always
+
+  db:
+    container_name: ${DB_CONTAINER_NAME}
+    image: mariadb:10.8.2
+    ports:
+      - ${DB_PORT:-3306}:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root}
+      MYSQL_DATABASE: ${DB_DATABASE:-mariadb}
+      MYSQL_USER: ${DB_USER:-dbmasteruser}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-Qwerty!23456}
+    restart: always
+
+  phpmyadmin:
+    container_name: ${PHPMYADMIN_CONTAINER_NAME}
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - ${PHPMYADMIN_PORT:-9980}:80
+    environment:
+      - PMA_ARBITRARY=1
+      - PMA_HOST=${PMA_HOST:-db}
+      - UPLOAD_LIMIT=300M
+    links:
+      - db
+    restart: always
