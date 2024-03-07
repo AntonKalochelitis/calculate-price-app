@@ -30,7 +30,8 @@ class PurchaseOrder
     #[ORM\JoinColumn(nullable: false)]
     private ?Currency $currency = null;
 
-    #[ORM\OneToOne(inversedBy: 'purchaseOrder', cascade: ['persist', 'remove'])]
+    #[ORM\ManyToOne(inversedBy: 'purchaseOrder')]
+    #[ORM\JoinColumn(nullable: true)]
     private ?Coupon $coupon = null;
 
     public function getId(): ?int

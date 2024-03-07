@@ -22,10 +22,6 @@ class Country
     #[ORM\Column(length: 3)]
     private ?string $alpha3 = null;
 
-    #[ORM\OneToOne(mappedBy: 'country', cascade: ['persist', 'remove'])]
-//    #[ORM\JoinColumn(nullable: true)]
-    private ?Tax $tax = null;
-
     public function getId(): ?int
     {
         return $this->id;
@@ -63,23 +59,6 @@ class Country
     public function setAlpha3(string $alpha3): static
     {
         $this->alpha3 = $alpha3;
-
-        return $this;
-    }
-
-    public function getTax(): ?Tax
-    {
-        return $this->tax;
-    }
-
-    public function setTax(Tax $tax): static
-    {
-        // set the owning side of the relation if necessary
-        if ($tax->getCountry() !== $this) {
-            $tax->setCountry($this);
-        }
-
-        $this->tax = $tax;
 
         return $this;
     }

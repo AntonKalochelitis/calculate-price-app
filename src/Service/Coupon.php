@@ -140,4 +140,28 @@ class Coupon
         $this->entityManager->persist($coupon);
         $this->entityManager->flush();
     }
+
+    /**
+     * @return EntityCoupon[]
+     */
+    public function getCouponList()
+    {
+        $returnCoupon = [];
+
+        /** @var EntityCoupon[] $couponList */
+        $couponList = $this->couponRepository->findBy([
+            'status' => EntityCoupon::ACTIVE
+        ]);
+
+        foreach ($couponList as $coupon) {
+            $returnCoupon[] = [
+                'id' => $coupon->getId(),
+                'currency' => $coupon->getCurrency()->getName(),
+                'coupon' => $coupon->getCoupon(),
+                'value' => $coupon->getValue()
+            ];
+        }
+
+        return $returnCoupon;
+    }
 }

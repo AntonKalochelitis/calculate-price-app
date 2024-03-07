@@ -30,9 +30,6 @@ class Coupon
     #[ORM\Column(length: 1)]
     private ?int $status = null;
 
-    #[ORM\OneToOne(mappedBy: 'coupon', cascade: ['persist', 'remove'])]
-    private ?PurchaseOrder $purchaseOrder = null;
-
     public function getId(): ?int
     {
         return $this->id;
@@ -98,23 +95,6 @@ class Coupon
     public function setStatus(string $status): static
     {
         $this->status = $status;
-
-        return $this;
-    }
-
-    public function getPurchaseOrder(): ?PurchaseOrder
-    {
-        return $this->purchaseOrder;
-    }
-
-    public function setPurchaseOrder(PurchaseOrder $purchaseOrder): static
-    {
-        // set the owning side of the relation if necessary
-        if ($purchaseOrder->getCoupon() !== $this) {
-            $purchaseOrder->setCoupon($this);
-        }
-
-        $this->purchaseOrder = $purchaseOrder;
 
         return $this;
     }

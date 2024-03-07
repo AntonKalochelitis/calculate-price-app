@@ -28,17 +28,32 @@ class PurchaseController extends AbstractController
 
     #[Route('/api/purchase', name: 'get_purchase', methods: ['POST'])]
     #[OA\Tag(name: 'Get purchase')]
-    #[OA\Response(
-        response: Response::HTTP_OK,
-        description: 'The list of product became successful',
-        content: new OA\JsonContent(
-            type: "array",
-            items: new OA\Items(ref: new Model(type: Product::class))
+    #[OA\RequestBody(
+        content: new OA\MediaType(
+            mediaType: "application/json",
+            schema: new OA\Schema(
+                ref: new Model(type: DTOPurchase::class)
+            )
         )
     )]
     #[OA\Response(
-        response: Response::HTTP_NOT_FOUND,
-        description: 'Workers not found',
+        response: Response::HTTP_OK,
+        description: 'Purchase successful',
+        content: new OA\JsonContent(
+            example: '[{
+	            "order_id": 1,
+	            "product_name": "Iphone",
+	            "product_amount": "100.00 EUR",
+	            "coupon": "2.00 EUR",
+	            "product_with_coupon": "98.00 EUR",
+	            "tax": "22%",
+	            "costing_tax": "21.56 EUR",
+	            "costing_amount": "119.56 EUR"
+            }]')
+    )]
+    #[OA\Response(
+        response: Response::HTTP_BAD_REQUEST,
+        description: 'Error',
         content: new OA\JsonContent(
             example: '{"error": string}'
         )
