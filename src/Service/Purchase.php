@@ -27,6 +27,14 @@ class Purchase
     {
     }
 
+    /**
+     * @param int $product
+     * @param string $taxNumber
+     * @param string|null $couponCode
+     * @param string $paymentProcessor
+     * @return array
+     * @throws \Exception
+     */
     public function pay(
         int     $product,
         string  $taxNumber,
@@ -66,6 +74,7 @@ class Purchase
 
         if ($order = $this->purchaseOrder->saveOrder(
             $product,
+            $taxNumber,
             $costingTax,
             $coupon ?? null,
             (new EntityPurchaseOrder())

@@ -21,12 +21,14 @@ class PurchaseOrder
 
     public function saveOrder(
         EntityProduct       $product,
+        string              $taxNumber,
         Money               $costingTax,
         ?EntityCoupon       $coupon,
         EntityPurchaseOrder $purchaseOrder
     ): ?EntityPurchaseOrder
     {
         $purchaseOrder->setProduct($product);
+        $purchaseOrder->setTaxNumber($taxNumber);
         $purchaseOrder->setCurrency($product->getCurrency());
         $purchaseOrder->setCoupon($coupon);
         $purchaseOrder->setPrice($product->getPrice());

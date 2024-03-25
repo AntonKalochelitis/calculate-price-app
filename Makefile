@@ -28,6 +28,10 @@ composer_update:
 composer_install:
 	sudo docker exec -t ${PHPFPM_CONTAINER_NAME} bash -c 'composer install'
 
+test_install:
+	sudo docker exec -t ${PHPFPM_CONTAINER_NAME} bash -c './bin/console doctrine:database:create --env=test'
+	sudo docker exec -t ${PHPFPM_CONTAINER_NAME} bash -c './bin/console doctrine:migrations:migrate --env=test  --no-interaction'
+
 make_migration:
 	sudo docker exec -t ${PHPFPM_CONTAINER_NAME} bash -c './bin/console make:migration'
 
@@ -36,3 +40,6 @@ migration:
 
 migration_down:
 	sudo docker exec -t ${PHPFPM_CONTAINER_NAME} bash -c './bin/console doctrine:migrations:migrate prev --no-interaction'
+
+test:
+	sudo docker exec -t ${PHPFPM_CONTAINER_NAME} bash -c './vendor/bin/phpunit'

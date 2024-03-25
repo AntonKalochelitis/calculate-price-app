@@ -13,6 +13,9 @@ class PurchaseOrder
     #[ORM\Column]
     private ?int $id = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?string $taxNumber = null;
+
     #[ORM\ManyToOne(inversedBy: 'purchaseOrderList')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Product $product = null;
@@ -38,6 +41,19 @@ class PurchaseOrder
     {
         return $this->id;
     }
+
+    public function getTaxNumber(): ?string
+    {
+        return $this->taxNumber;
+    }
+
+    public function setTaxNumber(?string $taxNumber): static
+    {
+        $this->taxNumber = $taxNumber;
+
+        return $this;
+    }
+
 
     public function getProduct(): ?Product
     {

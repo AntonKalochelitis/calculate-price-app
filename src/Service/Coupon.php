@@ -156,6 +156,7 @@ class Coupon
         foreach ($couponList as $coupon) {
             $returnCoupon[] = [
                 'id' => $coupon->getId(),
+                'type' => $this->serviceTypeCoupon->getObjectTypeCouponByTypeId($coupon->getType()->getId())->getName(),
                 'currency' => $coupon->getCurrency()->getName(),
                 'coupon' => $coupon->getCoupon(),
                 'value' => $coupon->getValue()

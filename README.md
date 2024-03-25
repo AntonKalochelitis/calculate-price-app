@@ -28,6 +28,18 @@ make migration
 6. After successful installation, access the documentation at the following link:
    http://127.0.0.1:9580/api/doc
 
+
+7. Для запуска тестов: Один раз запускаем
+```shell
+make test_install
+```
+
+8. Для запуска тестов:
+```shell
+make test
+```
+
+
 ## Working URLs
 ```shell
     GET    http://127.0.0.1:9580/api/doc - Documentation

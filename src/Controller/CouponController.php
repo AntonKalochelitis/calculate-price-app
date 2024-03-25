@@ -24,11 +24,13 @@ class CouponController extends AbstractController
         content: new OA\JsonContent(
             example: '[{
 		        "id": 2,
+		        "type": "fixed",
 		        "currency": "Euro",
 		        "coupon": "MQ6HGQD1-B8E54CWG-8LG8AB9C",
 		        "value": 900
             }, {
 		        "id": 3,
+		        "type": "percent",
 		        "currency": "Euro",
 		        "coupon": "THVRSA3C-0RRV9TD9-0OCA20P9",
 		        "value": 300

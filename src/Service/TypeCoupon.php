@@ -13,6 +13,15 @@ class TypeCoupon
     {
     }
 
+    public function getObjectTypeCouponByTypeId(int $id): ?EntityTypeCoupon
+    {
+        $typeCoupon = $this->typeCouponRepository->findOneBy([
+            'id' => $id,
+        ]);
+
+        return ((!empty($typeCoupon)) ? $typeCoupon : null);
+    }
+
     /**
      * @param string $name
      * @return EntityTypeCoupon|null
