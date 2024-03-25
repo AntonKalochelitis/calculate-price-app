@@ -166,7 +166,7 @@ class ApiRESTCheckerTest extends WebTestCase
             $entityManager->remove($purchaseOrder);
         }
 
-        // Удаляем все записи из CouponRepository
+        // Delete from CouponRepository
         /** @var CouponRepository $couponRepository */
         $couponRepository = static::getContainer()->get(CouponRepository::class);
         $coupons = $couponRepository->findAll();
@@ -176,7 +176,7 @@ class ApiRESTCheckerTest extends WebTestCase
 
         $entityManager = static::getContainer()->get('doctrine')->getManager();
 
-        // Очищаем EntityManager
+        // Clean EntityManager
         $entityManager->flush();
     }
 

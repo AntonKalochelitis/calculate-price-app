@@ -29,12 +29,12 @@ make migration
    http://127.0.0.1:9580/api/doc
 
 
-7. Для запуска тестов: Один раз запускаем
+7. For run tests: Run once
 ```shell
 make test_install
 ```
 
-8. Для запуска тестов:
+8. To run tests:
 ```shell
 make test
 ```
