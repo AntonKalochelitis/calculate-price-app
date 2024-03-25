@@ -3,6 +3,8 @@
 namespace App\Tests;
 
 use App\Repository\CouponRepository;
+use App\Repository\PurchaseOrderRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Request;
@@ -151,6 +153,33 @@ class ApiRESTCheckerTest extends WebTestCase
         $this->assertArrayHasKey('costing_amount', $jsonResponse, 'The response should contain an "costing_amount" field');
     }
 
+    protected function cleanDB()
+    {
+        /** @var EntityManagerInterface $entityManager */
+        $entityManager = static::getContainer()->get('doctrine')->getManager();
+
+        /** @var PurchaseOrderRepository $purchaseOrderRepository */
+        $purchaseOrderRepository = static::getContainer()->get(PurchaseOrderRepository::class);
+
+        $purchaseOrders = $purchaseOrderRepository->findAll();
+        foreach ($purchaseOrders as $purchaseOrder) {
+            $entityManager->remove($purchaseOrder);
+        }
+
+        // Удаляем все записи из CouponRepository
+        /** @var CouponRepository $couponRepository */
+        $couponRepository = static::getContainer()->get(CouponRepository::class);
+        $coupons = $couponRepository->findAll();
+        foreach ($coupons as $coupon) {
+            $entityManager->remove($coupon);
+        }
+
+        $entityManager = static::getContainer()->get('doctrine')->getManager();
+
+        // Очищаем EntityManager
+        $entityManager->flush();
+    }
+
     public function testDefault(): void
     {
         $client = static::createClient();
@@ -185,6 +214,6 @@ class ApiRESTCheckerTest extends WebTestCase
         $this->apiPurchase($client, 'FRPR123456789', 'percent');
         $this->apiPurchase($client, 'FRPR123456789');
 
-
+        $this->cleanDB();
     }
 }
