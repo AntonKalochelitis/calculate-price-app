@@ -26,7 +26,7 @@ make migration
 ```
 
 6. After successful installation, access the documentation at the following link:
-   http://127.0.0.1:9580/api/doc
+   http://127.0.0.1:9950/api/doc
 
 
 7. For run tests: Run once

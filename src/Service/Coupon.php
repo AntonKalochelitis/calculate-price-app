@@ -5,6 +5,7 @@ namespace App\Service;
 use App\Entity\Coupon as EntityCoupon;
 use App\Entity\TypeCoupon as EntityTypeCoupon;
 use App\Repository\CouponRepository;
+use App\Service\Coupon as ServiceCoupon;
 use Doctrine\ORM\EntityManagerInterface;
 use Money\Money;
 
@@ -19,6 +20,13 @@ class Coupon
     {
     }
 
+    /**
+     * @param string $typeName
+     * @param string $code
+     * @param string $currency
+     * @param int $value
+     * @return EntityCoupon
+     */
     public function saveCoupon(
         string $typeName,
         string $code,
@@ -41,6 +49,26 @@ class Coupon
         $this->entityManager->flush();
 
         return $entityCoupon;
+    }
+
+    public function generateQuantity(
+        string $type = 'fixed',
+        int $quantity = 100,
+        string $currency = 'EUR'
+    )
+    {
+        $generateList = [];
+        for ($i = 0; $i <= $quantity; $i++) {
+            $generateList[$i] = ServiceCoupon::generate(mt_rand(1, 10) * 100, 100, $type);
+            $this->saveCoupon(
+                $generateList[$i]['type'],
+                $generateList[$i]['code'],
+                $currency,
+                $generateList[$i]['value']
+            );
+        }
+
+        return $generateList;
     }
 
     /**
@@ -79,6 +107,10 @@ class Coupon
         return $couponList;
     }
 
+    /**
+     * @param $length
+     * @return string
+     */
     protected static function generateCouponCode($length = 8)
     {
         $characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -91,6 +123,10 @@ class Coupon
         return $couponCode;
     }
 
+    /**
+     * @param string $type
+     * @return void
+     */
     public static function couponCheckType(string $type): void
     {
         if (!($type === EntityTypeCoupon::FIXED_NAME || $type === EntityTypeCoupon::PERCENT_NAME)) {
@@ -99,6 +135,11 @@ class Coupon
         }
     }
 
+    /**
+     * @param Money $productPrice
+     * @param string $couponCode
+     * @return Money
+     */
     public function addDiscountToPriceByCode(
         Money  $productPrice,
         string $couponCode
@@ -122,6 +163,10 @@ class Coupon
         return $productPrice->subtract($discountPrice);
     }
 
+    /**
+     * @param string $couponCode
+     * @return EntityCoupon|null
+     */
     public function getCouponByCode(string $couponCode): ?EntityCoupon
     {
         /** @var EntityCoupon $discount */
@@ -133,6 +178,10 @@ class Coupon
         return $discount;
     }
 
+    /**
+     * @param EntityCoupon $coupon
+     * @return void
+     */
     public function setCouponByCouponDeactivated(EntityCoupon $coupon): void
     {
         $coupon->setStatus(EntityCoupon::DEACTIVATED);

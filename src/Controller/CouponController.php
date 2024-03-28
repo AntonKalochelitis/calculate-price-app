@@ -73,25 +73,9 @@ class CouponController extends AbstractController
     )]
     public function generate()
     {
-        for ($i = 0; $i <= 100; $i++) {
-            $generateList1[$i] = ServiceCoupon::generate(mt_rand(1, 10) * 100, 100, 'fixed');
-            $this->serviceCoupon->saveCoupon(
-                $generateList1[$i]['type'],
-                $generateList1[$i]['code'],
-                'EUR',
-                $generateList1[$i]['value']
-            );
-        }
+        $generateList1 = $this->serviceCoupon->generateQuantity('fixed', 100);
 
-        for ($i = 0; $i <= 100; $i++) {
-            $generateList2[$i] = ServiceCoupon::generate(mt_rand(1, 100) * 100, 100, 'percent');
-            $this->serviceCoupon->saveCoupon(
-                $generateList2[$i]['type'],
-                $generateList2[$i]['code'],
-                'EUR',
-                $generateList2[$i]['value']
-            );
-        }
+        $generateList2 = $this->serviceCoupon->generateQuantity('percent', 100);
 
         return $this->json(array_merge($generateList1, $generateList2));
     }
