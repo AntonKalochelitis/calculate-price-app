@@ -6,18 +6,35 @@ use App\Service\Tax as ServiceTax;
 use App\Service\Coupon as ServiceCoupon;
 use App\Entity\Product as EntityProduct;
 use App\Repository\ProductRepository;
+use App\Validator\DTOCalculatePrice;
 use Money\Currencies\ISOCurrencies;
 use Money\Formatter\DecimalMoneyFormatter;
 use Money\Money;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Serializer\SerializerInterface;
 
 class PriceCalculator
 {
     public function __construct(
-        protected ServiceTax        $serviceTax,
-        protected ServiceCoupon     $serviceCoupon,
-        protected ProductRepository $productRepository
+        protected SerializerInterface $serializer,
+        protected ServiceTax          $serviceTax,
+        protected ServiceCoupon       $serviceCoupon,
+        protected ProductRepository   $productRepository
     )
     {
+    }
+
+    /**
+     * @param Request $request
+     * @return DTOCalculatePrice
+     */
+    public function dto(Request $request): DTOCalculatePrice
+    {
+        return $this->serializer->deserialize(
+            $request->getContent(),
+            DTOCalculatePrice::class,
+            'json'
+        );
     }
 
     public function costing(

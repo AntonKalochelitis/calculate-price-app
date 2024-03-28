@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Validator\DTOPurchase;
-use App\Entity\Product;
 use App\Service\Purchase as ServicePurchase;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use OpenApi\Attributes as OA;
@@ -11,17 +10,15 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Psr\Log\LoggerInterface;
 
 class PurchaseController extends AbstractController
 {
     public function __construct(
-        protected ServicePurchase     $servicePurchase,
-        protected SerializerInterface $serializer,
-        protected ValidatorInterface  $validator,
-        protected LoggerInterface     $logger
+        protected ServicePurchase    $servicePurchase,
+        protected ValidatorInterface $validator,
+        protected LoggerInterface    $logger
     )
     {
     }
@@ -61,12 +58,7 @@ class PurchaseController extends AbstractController
     public function index(Request $request): Response
     {
         try {
-            /** @var DTOPurchase $dto */
-            $dto = $this->serializer->deserialize(
-                $request->getContent(),
-                DTOPurchase::class,
-                'json'
-            );
+            $dto = $this->servicePurchase->dto($request);
 
             $errors = $this->validator->validate($dto);
             if (count($errors) > 0) {
@@ -92,10 +84,7 @@ class PurchaseController extends AbstractController
             $this->logger->error(print_r($error, 1));
         }
 
-        return $this->json(
-            [
-                'error' => $error
-            ],
+        return $this->json(['error' => $error],
             Response::HTTP_BAD_REQUEST
         );
     }

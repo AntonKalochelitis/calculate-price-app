@@ -11,15 +11,13 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class CalculatePriceController extends AbstractController
 {
     public function __construct(
-        protected SerializerInterface $serializer,
         protected ValidatorInterface  $validator,
-        protected PriceCalculator     $priceCalculator,
+        protected PriceCalculator     $servicePriceCalculator,
         protected LoggerInterface     $logger
     )
     {
@@ -59,12 +57,7 @@ class CalculatePriceController extends AbstractController
     public function index(Request $request): Response
     {
         try {
-            /** @var DTOCalculatePrice $dto */
-            $dto = $this->serializer->deserialize(
-                $request->getContent(),
-                DTOCalculatePrice::class,
-                'json'
-            );
+            $dto = $this->servicePriceCalculator->dto($request);
 
             $errors = $this->validator->validate($dto);
             if (count($errors) > 0) {
@@ -74,7 +67,7 @@ class CalculatePriceController extends AbstractController
                 );
             }
 
-            return $this->json($this->priceCalculator->costing(
+            return $this->json($this->servicePriceCalculator->costing(
                 $dto->getProduct(),
                 $dto->getTaxNumber(),
                 $dto->getCouponCode()
@@ -87,10 +80,7 @@ class CalculatePriceController extends AbstractController
             $this->logger->error($error);
         }
 
-        return $this->json(
-            [
-                'error' => $error
-            ],
+        return $this->json(['error' => $error],
             Response::HTTP_BAD_REQUEST
         );
     }

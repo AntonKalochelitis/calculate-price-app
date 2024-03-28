@@ -7,15 +7,19 @@ use App\Entity\PurchaseOrder as EntityPurchaseOrder;
 use App\Repository\ProductRepository;
 use App\Service\Coupon as ServiceCoupon;
 use App\Service\Tax as ServiceTax;
+use App\Validator\DTOPurchase;
 use Money\Currencies\ISOCurrencies;
 use Money\Formatter\DecimalMoneyFormatter;
 use Money\Money;
 use App\PaymentProcessor\PaypalPaymentProcessor;
 use App\PaymentProcessor\StripePaymentProcessor;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Serializer\SerializerInterface;
 
 class Purchase
 {
     public function __construct(
+        protected SerializerInterface    $serializer,
         protected ServiceTax             $serviceTax,
         protected ServiceCoupon          $serviceCoupon,
         protected PurchaseOrder          $purchaseOrder,
@@ -25,6 +29,19 @@ class Purchase
         protected StripePaymentProcessor $stripePaymentProcessor
     )
     {
+    }
+
+    /**
+     * @param Request $request
+     * @return DTOPurchase
+     */
+    public function dto(Request $request): DTOPurchase
+    {
+        return $this->serializer->deserialize(
+            $request->getContent(),
+            DTOPurchase::class,
+            'json'
+        );
     }
 
     /**

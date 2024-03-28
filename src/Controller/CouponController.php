@@ -74,7 +74,6 @@ class CouponController extends AbstractController
     public function generate()
     {
         $generateList1 = $this->serviceCoupon->generateQuantity('fixed', 100);
-
         $generateList2 = $this->serviceCoupon->generateQuantity('percent', 100);
 
         return $this->json(array_merge($generateList1, $generateList2));
